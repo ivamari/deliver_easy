@@ -115,7 +115,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',),
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
 
@@ -135,7 +135,7 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 
     'SERVE_PERMISSIONS': [
-        'rest_framework.permissions.IsAuthenticated'],
+        'rest_framework.permissions.IsAdminUser'],
 
     'SERVE_AUTHENTICATION': [
         'rest_framework.authentication.BasicAuthentication'],
