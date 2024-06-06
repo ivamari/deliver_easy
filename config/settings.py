@@ -40,6 +40,7 @@ INSTALLED_APPS += [
     'api',
     'common',
     'users',
+    'cafes',
 ]
 
 INSTALLED_APPS += [

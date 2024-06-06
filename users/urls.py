@@ -1,10 +1,13 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 
-from users.views import users
-
+from users.views.clients import RegistrationClientView, MeClientView
+from users.views.employees import RegistrationEmployeeView, MeEmployeeView
 
 urlpatterns = [
-    path('users/reg/', users.RegistrationView.as_view(), name='reg'),
+    path('users/client/reg/', RegistrationClientView.as_view(),
+         name='reg'),
+    path('users/employee/reg/', RegistrationEmployeeView.as_view(),
+         name='reg'),
+    path('users/client/me/', MeClientView.as_view(), name='me'),
+    path('users/client/me/', MeEmployeeView.as_view(), name='me'),
 ]
-
