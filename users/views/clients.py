@@ -21,11 +21,11 @@ class RegistrationClientView(generics.CreateAPIView):
 
 
 @extend_schema_view(
-    get=extend_schema(summary='Профиль пользователя', tags=['Пользователи']),
+    get=extend_schema(summary='Профиль пользователя', tags=['Клиенты']),
     put=extend_schema(summary='Изменить профиль пользователя',
-                      tags=['Пользователи']),
+                      tags=['Клиенты']),
     patch=extend_schema(summary='Изменить частично профиль пользователя',
-                        tags=['Пользователи']),
+                        tags=['Клиенты']),
 )
 class MeClientView(RetrieveUpdateAPIView):
     """Получение/обновление профиля клиента"""

@@ -158,6 +158,14 @@ DJOSER = {
     'SERIALIZERS': {},
 }
 
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (54.710426, 20.452214),  # Координаты Калининграда
+    'DEFAULT_ZOOM': 12,  # Установите подходящий уровень масштаба
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+    'ATTRIBUTION_PREFIX': 'OpenMaps',
+}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),

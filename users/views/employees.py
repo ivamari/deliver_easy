@@ -21,11 +21,11 @@ class RegistrationEmployeeView(generics.CreateAPIView):
 
 
 @extend_schema_view(
-    get=extend_schema(summary='Профиль пользователя', tags=['Пользователи']),
-    put=extend_schema(summary='Изменить профиль пользователя',
-                      tags=['Пользователи']),
-    patch=extend_schema(summary='Изменить частично профиль пользователя',
-                        tags=['Пользователи']),
+    get=extend_schema(summary='Профиль сотрудника', tags=['Сотрудники']),
+    put=extend_schema(summary='Изменить профиль сотрудника',
+                      tags=['Сотрудники']),
+    patch=extend_schema(summary='Изменить частично профиль сотрудника',
+                        tags=['Сотрудники']),
 )
 class MeEmployeeView(RetrieveUpdateAPIView):
     """Получение/обновления профиля сотрудника"""

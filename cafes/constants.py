@@ -1,0 +1,3 @@
+OWNER_POSITION = 'owner'
+MANAGER_POSITION = 'manager'
+OPERATOR_POSITION = 'operator'
