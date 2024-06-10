@@ -75,7 +75,7 @@ class CategoryCookingTimeAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'available',)
+    list_display = ('name', 'price',)
     filter_horizontal = ('cafe',)
 
 

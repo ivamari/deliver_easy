@@ -6,7 +6,7 @@ from cafes.views.categories import CategoryView, CategoryCookingTimeView
 from cafes.views.employees import EmployeeView
 from cafes.views.departments import DepartmentView
 from cafes.views.positions import PositionView
-from cafes.views.products import ProductCafeView
+from cafes.views.products import ProductCafeView, ProductView
 
 router1 = DefaultRouter()
 router2 = DefaultRouter()
@@ -23,7 +23,7 @@ router3.register(r'categories', CategoryView, basename='categories')
 router3.register(r'(?P<category_id>[^/.]+)/category-cooking-time',
                  CategoryCookingTimeView,
                  basename='category_cooking_time')
-# router3.urls('', ProductView, 'products')
+router3.register('', ProductView, 'products')
 router1.register(r'(?P<cafe_id>[^/.]+)/products', ProductCafeView,
                  basename='products')
 

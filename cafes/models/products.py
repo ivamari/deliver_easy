@@ -7,12 +7,11 @@ from cafes.models.categories import Category
 class Product(models.Model):
     name = models.CharField('Название', max_length=20)
     price = models.IntegerField('Стоимость')
-    available = models.BooleanField('В наличии', default=True)
     category = models.ForeignKey(Category,
                                  models.RESTRICT,
                                  'category_products',
                                  verbose_name='Категория')
-    cafe = models.ManyToManyField(Cafe, verbose_name='Кафе')
+    cafe = models.ManyToManyField(Cafe, verbose_name='Кафе', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Продукт'
@@ -20,3 +19,4 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
