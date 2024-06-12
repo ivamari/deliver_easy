@@ -3,6 +3,7 @@ from django.urls import path
 from users.views.clients import RegistrationClientView, MeClientView
 from users.views.employees import RegistrationEmployeeView, MeEmployeeView
 
+
 urlpatterns = [
     path('users/client/reg/', RegistrationClientView.as_view(),
          name='reg'),

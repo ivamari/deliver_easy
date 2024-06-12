@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 class Position(models.Model):
+    """Модель должности"""
     name = models.CharField('Название должности', max_length=64)
     department = models.ForeignKey(Department, on_delete=models.CASCADE,
                                    verbose_name='Отдел')

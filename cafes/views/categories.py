@@ -3,24 +3,25 @@ from rest_framework import viewsets, mixins
 
 from cafes.models.categories import CategoryCookingTime
 from cafes.models.products import Category
-from cafes.serializers.api.categories import (CategoryListSerializer,
-                                              CategoryUpdateSerializer,
-                                              CategoryCreateSerializer,
-                                              CategoryRetrieveSerializer,
-                                              CategoryCookingTimeRetrieveSerializer,
-                                              CategoryCookingTimeListSerializer,
-                                              CategoryCookingTimeCreateSerializer,
-                                              CategoryCookingTimeUpdateSerializer)
+from cafes.serializers.api.categories import (
+    CategoryListSerializer,
+    CategoryUpdateSerializer,
+    CategoryCreateSerializer,
+    CategoryRetrieveSerializer,
+    CategoryCookingTimeRetrieveSerializer,
+    CategoryCookingTimeListSerializer,
+    CategoryCookingTimeCreateSerializer,
+    CategoryCookingTimeUpdateSerializer)
 
 
 @extend_schema_view(
     retrieve=extend_schema(summary='Получить категорию',
                            tags=['Товары: Категории']),
-    list=extend_schema(summary='Список категорий', tags=['Категории товаров']),
+    list=extend_schema(summary='Список категорий', tags=['Товары: Категории']),
     create=extend_schema(summary='Создать категорию',
-                         tags=['Категории товаров']),
+                         tags=['Товары: Категории']),
     partial_update=extend_schema(summary='Изменить категорию частично',
-                                 tags=['Категории товаров']),
+                                 tags=['Товары: Категории']),
 )
 class CategoryView(viewsets.GenericViewSet,
                    mixins.RetrieveModelMixin,

@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 class Cart(models.Model):
+    """Модель корзины пользователя"""
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE,
                                 related_name='user_cart')
@@ -25,9 +26,10 @@ class Cart(models.Model):
 
 
 class CartProduct(models.Model):
+    """Промежуточная модель корзины/продуктов"""
     cart = models.ForeignKey(Cart, models.CASCADE,
                              'cart_products',
-                             verbose_name='Продукты')
+                             verbose_name='Корзина пользователя')
     product = models.ForeignKey(Product, models.CASCADE,
                                 'product_carts',
                                 verbose_name='Продукт')

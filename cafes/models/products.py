@@ -5,13 +5,14 @@ from cafes.models.categories import Category
 
 
 class Product(models.Model):
+    """Модель продуктов"""
     name = models.CharField('Название', max_length=20)
     price = models.IntegerField('Стоимость')
     category = models.ForeignKey(Category,
                                  models.RESTRICT,
                                  'category_products',
                                  verbose_name='Категория')
-    cafe = models.ManyToManyField(Cafe, verbose_name='Кафе', null=True, blank=True)
+    cafe = models.ManyToManyField(Cafe, verbose_name='Кафе', blank=True)
 
     class Meta:
         verbose_name = 'Продукт'

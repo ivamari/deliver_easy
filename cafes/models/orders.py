@@ -9,12 +9,14 @@ User = get_user_model()
 
 
 class OrderStatus(BaseDictModelMixin):
+    """Модель статусов заказов"""
     class Meta:
         verbose_name = 'Статус заказа'
         verbose_name_plural = 'Статусы заказов'
 
 
 class Order(models.Model):
+    """Модель заказа"""
     user = models.ManyToManyField(User,
                                   verbose_name='Пользователь'
                                   )
@@ -44,6 +46,7 @@ class Order(models.Model):
 
 
 class OrderProduct(models.Model):
+    """Промежуточная модель заказов/продуктов"""
     order = models.ForeignKey(Order, models.CASCADE,
                               'order_products',
                               verbose_name='Заказ')

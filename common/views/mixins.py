@@ -53,6 +53,14 @@ class ExtendedGenericViewSet(ExtendedView, GenericViewSet):
     pass
 
 
+class ListViewSet(ExtendedGenericViewSet, mixins.ListModelMixin):
+    pass
+
+
+class ExtendedGenericViewSet(ExtendedView, GenericViewSet):
+    pass
+
+
 class LCRUViewSet(ExtendedGenericViewSet,
                   mixins.CreateModelMixin,
                   mixins.RetrieveModelMixin,

@@ -1,64 +1,50 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from cafes.models.carts import Cart
 from cafes.models.categories import CategoryCookingTime
-from cafes.models.products import Category
+from cafes.serializers.nested.products import ProductShortSerializer
 from common.serializers.mixins import ExtendedModelSerializer
 
 User = get_user_model()
 
+
 ########################
-# CATEGORY
+# CARTS
 ########################
 
+class CartRetrieveSerializer(ExtendedModelSerializer):
+    """Сериализатор для получения корзины пользователя по id пользователя"""
 
-class CategoryListSerializer(ExtendedModelSerializer):
-    """Сериализатор для списка категорий"""
+    products = ProductShortSerializer(many=True)
+
     class Meta:
-        model = Category
+        model = Cart
         fields = (
             'id',
-            'name',
-            'code',
+            'user',
+            'products',
+            'created_at',
+            'updated_at',
         )
 
 
-class CategoryRetrieveSerializer(ExtendedModelSerializer):
-    """Сериализатор для получения категории"""
+class MeCartRetrieveSerializer(ExtendedModelSerializer):
+    """Сериализатор для получения своей корзины пользователем"""
+
+    products = ProductShortSerializer(many=True)
+
     class Meta:
-        model = Category
+        model = Cart
         fields = (
             'id',
-            'name',
-            'code',
+            'products',
         )
 
 
-class CategoryCreateSerializer(ExtendedModelSerializer):
-    """Сериализатор для создания категории"""
-    class Meta:
-        model = Category
-        fields = (
-            'id',
-            'name',
-            'code',
-        )
-
-
-class CategoryUpdateSerializer(ExtendedModelSerializer):
-    """Сериализатор для обновления категории"""
-    class Meta:
-        model = Category
-        fields = (
-            'id',
-            'name',
-            'code',
-        )
-
-
-class CategoryDeleteSerializer(serializers.Serializer):
-    """Сериализатор для удаления категории"""
-    pass
+# реализовать сериализатор для добавления товара в корзину пользователя
+# реализовать сериализатор для удаления товара из корзины пользователя
+# реализовать сериализатор для получения своей корзины пользователем
 
 
 ########################

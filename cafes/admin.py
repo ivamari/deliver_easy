@@ -17,6 +17,7 @@ from leaflet.admin import LeafletGeoAdmin
 @admin.register(Cafe)
 class CafeAdmin(LeafletGeoAdmin):
     list_display = ('id', 'name', 'owner',)
+    list_display_links = ('id', 'name',)
 
 
 ################
@@ -85,7 +86,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
-    list_display = ('user',)
+    list_display = ('user', 'created_at', 'updated_at')
 
 
 @admin.register(CartProduct)

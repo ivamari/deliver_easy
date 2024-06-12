@@ -8,6 +8,7 @@ User = get_user_model()
 
 
 class Employee(models.Model):
+    """Модель сотрудников кафе"""
     user = models.ForeignKey(User, models.CASCADE,
                              'cafes_info')
     cafe = models.ForeignKey(Cafe, models.CASCADE,

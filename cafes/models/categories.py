@@ -1,10 +1,10 @@
 from django.db import models
 
-from cafes.models.cafes import Cafe
 from common.models.mixins import BaseDictModelMixin
 
 
 class Category(BaseDictModelMixin):
+    """Модель категорий"""
     class Meta:
         verbose_name = 'Категория товаров'
         verbose_name_plural = 'Категории товаров'
@@ -14,6 +14,7 @@ class Category(BaseDictModelMixin):
 
 
 class CategoryCookingTime(models.Model):
+    """Модель времени приготовления категорий"""
     category = models.OneToOneField(Category,
                                     on_delete=models.CASCADE,
                                     verbose_name='Категория')
