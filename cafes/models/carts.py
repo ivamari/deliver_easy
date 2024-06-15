@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class Cart(models.Model):
-    """Модель корзины пользователя"""
+    """Корзина пользователя"""
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE,
                                 related_name='user_cart')

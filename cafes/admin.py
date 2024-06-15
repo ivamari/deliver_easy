@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.cafes import Cafe
 from cafes.models.carts import Cart, CartProduct
 from cafes.models.categories import Category, CategoryCookingTime
@@ -11,6 +13,14 @@ from cafes.models.departments import Department
 from leaflet.admin import LeafletGeoAdmin
 
 
+##############################
+# INLINES
+##############################
+class CafeDepartmentInline(admin.TabularInline):
+    model = CafeDepartment
+    fields = ('cafe', 'department', 'manager', 'members')
+
+
 ################
 # CAFES
 ################
@@ -18,6 +28,13 @@ from leaflet.admin import LeafletGeoAdmin
 class CafeAdmin(LeafletGeoAdmin):
     list_display = ('id', 'name', 'owner',)
     list_display_links = ('id', 'name',)
+    inlines = (
+        CafeDepartmentInline,
+    )
+    readonly_fields = (
+        'created_at', 'created_by', 'updated_at', 'updated_by',
+    )
+    search_fields = ('name', )
 
 
 ################
@@ -35,7 +52,13 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'manager',)
+    list_display = ('id', 'name',)
+    list_display_links = ('id', 'name',)
+
+
+@admin.register(CafeDepartment)
+class CafeDepartmentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'cafe', 'department')
 
 
 @admin.register(Position)

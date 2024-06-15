@@ -9,3 +9,5 @@ class CafeFilter(django_filters.FilterSet):
     class Meta:
         model = Cafe
         fields = ('can_manage', 'id',)
+
+

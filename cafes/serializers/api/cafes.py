@@ -13,6 +13,7 @@ User = get_user_model()
 
 
 class CafeSearchListSerializer(ExtendedModelSerializer):
+    """Сериализатор для списка кафе с краткой информацией"""
     owner = UserShortSerializer(read_only=True)
 
     class Meta:
@@ -21,7 +22,7 @@ class CafeSearchListSerializer(ExtendedModelSerializer):
             'id',
             'name',
             'owner',
-            'location',
+            'location'
         )
 
 
@@ -78,7 +79,6 @@ class CafeListSerializer(GeoFeatureModelSerializer):
                   'location',
                   'pax',
                   'departments_count',
-                  'created_at',
                   'can_manage',)
 
 
@@ -98,7 +98,6 @@ class CafeRetrieveSerializer(GeoFeatureModelSerializer):
                   'location',
                   'pax',
                   'departments_count',
-                  'created_at',
                   'can_manage',
                   )
 
@@ -129,3 +128,4 @@ class CafeUpdateSerializer(GeoFeatureModelSerializer):
         if Cafe.objects.filter(location=value).exists():
             raise ParseError("Кафе с такой локацией уже существует.")
         return value
+

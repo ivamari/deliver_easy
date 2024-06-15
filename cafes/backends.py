@@ -8,3 +8,5 @@ class MyCafe(BaseFilterBackend):
         return queryset.filter(
             Q(owner=user) | Q(employees=user)
         ).distinct()
+
+
