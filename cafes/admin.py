@@ -3,7 +3,7 @@ from django.contrib import admin
 from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.cafes import Cafe
 from cafes.models.carts import Cart, CartProduct
-from cafes.models.categories import Category, CategoryCookingTime
+from cafes.models.categories import Category
 from cafes.models.employees import Employee
 from cafes.models.orders import OrderStatus, Order, OrderProduct
 from cafes.models.positions import Position
@@ -95,11 +95,6 @@ class ReplacementStatusAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('code', 'name',)
     list_display_links = ('code', 'name',)
-
-
-@admin.register(CategoryCookingTime)
-class CategoryCookingTimeAdmin(admin.ModelAdmin):
-    list_display = ('category', 'cooking_time',)
 
 
 @admin.register(Product)

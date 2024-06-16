@@ -39,7 +39,7 @@ class PositionRetrieveSerializer(ExtendedModelSerializer):
 class PositionCreateSerializer(ExtendedModelSerializer):
     """Сериализатор для создания должности"""
     department = serializers.PrimaryKeyRelatedField(
-        queryset=Department.objects.all())
+        queryset=Department.objects.all(), source='positions_department')
 
     class Meta:
         model = Position
@@ -50,7 +50,7 @@ class PositionCreateSerializer(ExtendedModelSerializer):
         )
 
     def validate_name(self, value):
-        if self.Meta.model.objects.filter(name=value):
+        if self.Meta.model.objects.filter(name=value).exists():
             raise ParseError(
                 'Такая должность уже существует.'
             )
@@ -69,7 +69,12 @@ class PositionUpdateSerializer(ExtendedModelSerializer):
             'department',
         )
 
+    def validate_name(self, value):
+        instance = self.instance
+        if instance and instance.name == value:
+            return value
+        if Position.objects.filter(name=value).exists():
+            raise ParseError("Должность с таким названием уже существует.")
+        return value
 
-class PositionDeleteSerializer(serializers.Serializer):
-    """Сериализатор для удаления должности"""
-    pass
+

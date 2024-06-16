@@ -10,6 +10,7 @@ class Position(models.Model):
     """Должности"""
     name = models.CharField('Название должности', max_length=64)
     department = models.ForeignKey(Department, on_delete=models.CASCADE,
+                                   related_name='positions_department',
                                    verbose_name='Отдел')
 
     class Meta:

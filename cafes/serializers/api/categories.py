@@ -1,15 +1,10 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from rest_framework.exceptions import ParseError
 
-from cafes.models.categories import CategoryCookingTime
 from cafes.models.products import Category
 from common.serializers.mixins import ExtendedModelSerializer
 
 User = get_user_model()
-
-########################
-# CATEGORY
-########################
 
 
 class CategoryListSerializer(ExtendedModelSerializer):
@@ -20,6 +15,7 @@ class CategoryListSerializer(ExtendedModelSerializer):
             'id',
             'name',
             'code',
+            'cooking_time'
         )
 
 
@@ -31,6 +27,7 @@ class CategoryRetrieveSerializer(ExtendedModelSerializer):
             'id',
             'name',
             'code',
+            'cooking_time',
         )
 
 
@@ -42,7 +39,27 @@ class CategoryCreateSerializer(ExtendedModelSerializer):
             'id',
             'name',
             'code',
+            'cooking_time',
         )
+
+    def validate_name(self, value):
+        if self.Meta.model.objects.filter(name=value):
+            raise ParseError(
+                'Категория с таким названием уже существует.'
+            )
+        return value
+
+    def validate_code(self, value):
+        if self.Meta.model.objects.filter(code=value):
+            raise ParseError(
+                'Категория с таким кодом уже существует.'
+            )
+        return value
+
+    def validate_cooking_time(self, value):
+        if value <= 0:
+            raise ParseError('Время приготовления не может быть отрицательным.')
+        return value
 
 
 class CategoryUpdateSerializer(ExtendedModelSerializer):
@@ -53,57 +70,24 @@ class CategoryUpdateSerializer(ExtendedModelSerializer):
             'id',
             'name',
             'code',
-        )
-
-
-class CategoryDeleteSerializer(serializers.Serializer):
-    """Сериализатор для удаления категории"""
-    pass
-
-
-########################
-# CATEGORY_COOKING_TIME
-########################
-
-class CategoryCookingTimeListSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
             'cooking_time',
         )
 
+    def validate_name(self, value):
+        if self.Meta.model.objects.filter(name=value):
+            raise ParseError(
+                'Категория с таким названием уже существует.'
+            )
+        return value
 
-class CategoryCookingTimeRetrieveSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
+    def validate_code(self, value):
+        if self.Meta.model.objects.filter(code=value):
+            raise ParseError(
+                'Категория с таким кодом уже существует.'
+            )
+        return value
 
-
-class CategoryCookingTimeCreateSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
-
-
-class CategoryCookingTimeUpdateSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
-
-
-class CategoryCookingTimeDeleteSerializer(serializers.Serializer):
-    pass
+    def validate_cooking_time(self, value):
+        if value <= 0:
+            raise ParseError('Время приготовления не может быть отрицательным.')
+        return value

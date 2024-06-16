@@ -10,7 +10,6 @@ class UserShortSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             'id',
-            'username',
             'full_name',
         )
 

@@ -29,3 +29,12 @@ class IsMyDepartment(IsAuthenticated):
         if obj.manager.user == request.user:
             return True
         return False
+
+
+class IsMyCart(IsAuthenticated):
+    def has_object_permission(self, request, view, obj):
+        # если запрос от директора организации
+        if obj.user == request.user:
+            return True
+        return False
+

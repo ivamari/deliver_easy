@@ -132,9 +132,9 @@ class CartProductCreateUpdateSerializer(ExtendedModelSerializer):
                                                        'request': request}).data
 
 
-########################
+##########################
 # CART_PRODUCTS_DELETE
-########################
+##########################
 
 class CartProductDeleteSerializer(serializers.Serializer):
     """Сериализатор для удаления товара из корзины"""
@@ -143,24 +143,68 @@ class CartProductDeleteSerializer(serializers.Serializer):
     def validate(self, data):
         user = self.context['request'].user
         product_id = data.get('product_id')
-        if not CartProduct.objects.filter(cart__user=user, product_id=product_id).exists():
+        if not CartProduct.objects.filter(cart__user=user,
+                                          product_id=product_id).exists():
             raise serializers.ValidationError('Товар не найден в корзине')
         return data
 
     def save(self):
         user = self.context['request'].user
         product_id = self.validated_data['product_id']
-        CartProduct.objects.filter(cart__user=user, product_id=product_id).delete()
+        CartProduct.objects.filter(cart__user=user,
+                                   product_id=product_id).delete()
 
 
-########################
-# CART_PRODUCTS_ADD
-########################
+##########################
+# CART_PRODUCTS_AMOUNT
+##########################
+class IncreaseCartProductQuantitySerializer(serializers.Serializer):
+    """Сериализатор для увеличения количества товара в корзине на 1"""
+    product_id = serializers.IntegerField()
+
+    def validate(self, data):
+        user = self.context['request'].user
+        product_id = data.get('product_id')
+        try:
+            cart_product = CartProduct.objects.get(cart__user=user,
+                                                   product_id=product_id)
+        except CartProduct.DoesNotExist:
+            raise serializers.ValidationError('Товар не найден в корзине')
+        return data
+
+    def save(self):
+        user = self.context['request'].user
+        product_id = self.validated_data['product_id']
+        cart_product = CartProduct.objects.get(cart__user=user,
+                                               product_id=product_id)
+        cart_product.amount += 1
+        cart_product.save()
+        return cart_product
 
 
+class ReduceCartProductQuantitySerializer(serializers.Serializer):
+    """Сериализатор для уменьшения количества товара в корзине на 1"""
+    product_id = serializers.IntegerField()
 
+    def validate(self, data):
+        user = self.context['request'].user
+        product_id = data.get('product_id')
+        try:
+            cart_product = CartProduct.objects.get(cart__user=user,
+                                                   product_id=product_id)
+        except CartProduct.DoesNotExist:
+            raise serializers.ValidationError('Товар не найден в корзине')
+        return data
 
-
-
-
+    def save(self):
+        user = self.context['request'].user
+        product_id = self.validated_data['product_id']
+        cart_product = CartProduct.objects.get(cart__user=user,
+                                               product_id=product_id)
+        if cart_product.amount > 1:
+            cart_product.amount -= 1
+            cart_product.save()
+        else:
+            cart_product.delete()
+        return cart_product
 
