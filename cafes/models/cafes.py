@@ -24,8 +24,7 @@ class Cafe(InfoMixin):
     departments = models.ManyToManyField(Department,
                                          through='CafeDepartment',
                                          verbose_name='Отделы',
-                                         blank=True,
-                                         )
+                                         blank=True,)
 
     class Meta:
         verbose_name = 'Кафе'

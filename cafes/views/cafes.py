@@ -1,7 +1,7 @@
 from django.db.models import Count, Case, When
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework import viewsets
+
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 from cafes.backends import MyCafe
@@ -13,8 +13,10 @@ from cafes.serializers.api.cafes import (CafeRetrieveSerializer,
                                          CafeCreateSerializer,
                                          CafeUpdateSerializer,
                                          CafeSearchListSerializer)
-from cafes.serializers.api.departments import CafeDepartmentListSerializer, \
-    CafeDepartmentRetrieveSerializer, CafeDepartmentCreateUpdateSerializer
+from cafes.serializers.api.departments import (
+    CafeDepartmentListSerializer,
+    CafeDepartmentRetrieveSerializer,
+    CafeDepartmentCreateUpdateSerializer)
 from common.views.mixins import LCRUViewSet, ListViewSet
 
 
@@ -36,7 +38,7 @@ class CafeSearchView(ListViewSet):
                                  tags=['Кафе']),
 )
 class CafeView(LCRUViewSet):
-    """Представление для кафе"""
+    """Представление для с краткой информацией о кафе"""
     permission_classes = [IsMyCafe]
     queryset = Cafe.objects.all()
     serializer_class = CafeListSerializer
@@ -87,11 +89,9 @@ class CafeView(LCRUViewSet):
     retrieve=extend_schema(summary='Получить кафе с отделами',
                            tags=['Кафе: Отделы']),
     update=extend_schema(summary='Добавить отдел в кафе', tags=['Кафе: Отделы']),
-    # partial_update=extend_schema(summary='Изменить кафе частично',
-    #                              tags=['Кафе']),
 )
 class CafeDepartmentView(LCRUViewSet):
-    """Представление для кафе"""
+    """Представление для кафе с отделами"""
     queryset = Cafe.objects.all()
     serializer_class = CafeDepartmentListSerializer
 

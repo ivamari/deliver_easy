@@ -67,3 +67,12 @@ class LCRUViewSet(ExtendedGenericViewSet,
                   mixins.UpdateModelMixin,
                   mixins.ListModelMixin, ):
     pass
+
+
+class LCRUDViewSet(ExtendedGenericViewSet,
+                   mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.ListModelMixin,
+                   mixins.DestroyModelMixin):
+    pass

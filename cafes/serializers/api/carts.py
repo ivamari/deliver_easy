@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from cafes.models.carts import Cart
-from cafes.models.categories import CategoryCookingTime
+from cafes.models.carts import Cart, CartProduct
+from cafes.models.products import Product
 from cafes.serializers.nested.products import ProductShortSerializer
 from common.serializers.mixins import ExtendedModelSerializer
 
@@ -13,7 +13,7 @@ User = get_user_model()
 # CARTS
 ########################
 
-class CartRetrieveSerializer(ExtendedModelSerializer):
+class CartUserRetrieveSerializer(ExtendedModelSerializer):
     """Сериализатор для получения корзины пользователя по id пользователя"""
 
     products = ProductShortSerializer(many=True)
@@ -42,54 +42,125 @@ class MeCartRetrieveSerializer(ExtendedModelSerializer):
         )
 
 
-# реализовать сериализатор для добавления товара в корзину пользователя
-# реализовать сериализатор для удаления товара из корзины пользователя
-# реализовать сериализатор для получения своей корзины пользователем
+########################
+# CART_PRODUCTS_ADD
+########################
+
+class ProductCartRepresentationSerializer(serializers.ModelSerializer):
+    """Вложенный сериализатор для вывода"""
+    id = serializers.IntegerField(source='product.id')
+    name = serializers.CharField(source='product.name')
+
+    class Meta:
+        model = CartProduct
+        fields = (
+            'id',
+            'name',
+            'amount',
+        )
+
+
+class CartProductRepresentationSerializer(serializers.ModelSerializer):
+    """Сериализатор для вывода"""
+    products = ProductCartRepresentationSerializer(many=True,
+                                                   source='cart_products')
+
+    class Meta:
+        model = Cart
+        fields = (
+            'id',
+            'products',
+        )
+        read_only_fields = fields
+
+
+class ProductCartCreateUpdateSerializer(ExtendedModelSerializer):
+    """Сериализатор для товаров.
+    Используется при добавлении товара в корзину"""
+
+    id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(),
+                                            source='cart_products')
+    amount = serializers.IntegerField()
+
+    class Meta:
+        model = CartProduct
+        fields = (
+            'id',
+            'amount',
+        )
+
+
+class CartProductCreateUpdateSerializer(ExtendedModelSerializer):
+    """Сериализатор для добавления товаров в корзину"""
+
+    products = ProductCartCreateUpdateSerializer(many=True)
+
+    class Meta:
+        model = Cart
+        fields = (
+            'id',
+            'products',
+        )
+
+    def create_cart_products(self, cart, products_data):
+        cart_products = []
+        for product_data in products_data:
+            product = product_data['cart_products']
+            amount = product_data['amount']
+
+            if CartProduct.objects.filter(cart=cart, product=product).exists():
+                raise serializers.ValidationError(
+                    f'{product.name} уже есть в корзине.')
+
+            cart_products.append(
+                CartProduct(cart=cart, product=product, amount=amount)
+            )
+
+        CartProduct.objects.bulk_create(cart_products)
+
+    def update(self, cart, validated_data):
+        products_data = validated_data.pop('products')
+        super().update(cart, validated_data)
+        self.create_cart_products(cart, products_data)
+        cart.save()
+        return cart
+
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        return CartProductRepresentationSerializer(instance,
+                                                   context={
+                                                       'request': request}).data
 
 
 ########################
-# CATEGORY_COOKING_TIME
+# CART_PRODUCTS_DELETE
 ########################
 
-class CategoryCookingTimeListSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
+class CartProductDeleteSerializer(serializers.Serializer):
+    """Сериализатор для удаления товара из корзины"""
+    product_id = serializers.IntegerField()
+
+    def validate(self, data):
+        user = self.context['request'].user
+        product_id = data.get('product_id')
+        if not CartProduct.objects.filter(cart__user=user, product_id=product_id).exists():
+            raise serializers.ValidationError('Товар не найден в корзине')
+        return data
+
+    def save(self):
+        user = self.context['request'].user
+        product_id = self.validated_data['product_id']
+        CartProduct.objects.filter(cart__user=user, product_id=product_id).delete()
 
 
-class CategoryCookingTimeRetrieveSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
+########################
+# CART_PRODUCTS_ADD
+########################
 
 
-class CategoryCookingTimeCreateSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
 
 
-class CategoryCookingTimeUpdateSerializer(ExtendedModelSerializer):
-    class Meta:
-        model = CategoryCookingTime
-        fields = (
-            'id',
-            'category',
-            'cooking_time',
-        )
 
 
-class CategoryCookingTimeDeleteSerializer(serializers.Serializer):
-    pass
+
+

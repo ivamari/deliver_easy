@@ -10,14 +10,14 @@ User = get_user_model()
 
 
 class ReplacementStatus(BaseDictModelMixin):
-    """Модель статусов смены"""
+    """Статусы смены"""
     class Meta:
         verbose_name = 'Статус смены'
         verbose_name_plural = 'Статусы смены'
 
 
 class Replacement(models.Model):
-    """Модель смены"""
+    """Смены"""
     department = models.ManyToManyField(Department, verbose_name='Отделы')
     time_start = models.DateTimeField('Дата и время начала смены')
     time_end = models.DateTimeField('Дата и время конца смены')
@@ -31,7 +31,7 @@ class Replacement(models.Model):
 
 
 class ReplacementMember(models.Model):
-    """Модель сотрудников смены"""
+    """Сотрудники смены"""
     replacement = models.ManyToManyField(Replacement, verbose_name='Смены')
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE,
                                  related_name='employee_replacements')

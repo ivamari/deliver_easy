@@ -4,7 +4,7 @@ from common.models.mixins import BaseDictModelMixin
 
 
 class Category(BaseDictModelMixin):
-    """Модель категорий"""
+    """Категории"""
 
     class Meta:
         verbose_name = 'Категория товаров'
@@ -15,7 +15,7 @@ class Category(BaseDictModelMixin):
 
 
 class CategoryCookingTime(models.Model):
-    """Модель времени приготовления категорий"""
+    """Время приготовления категорий"""
     category = models.OneToOneField(Category,
                                     on_delete=models.CASCADE,
                                     verbose_name='Категория')

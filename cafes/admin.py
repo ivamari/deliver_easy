@@ -18,7 +18,12 @@ from leaflet.admin import LeafletGeoAdmin
 ##############################
 class CafeDepartmentInline(admin.TabularInline):
     model = CafeDepartment
-    fields = ('cafe', 'department', 'manager', 'members')
+    fields = ('cafe', 'department', 'manager', 'members',)
+
+
+class CartProductInline(admin.TabularInline):
+    model = CartProduct
+    fields = ('cart', 'product', 'amount',)
 
 
 ################
@@ -34,7 +39,7 @@ class CafeAdmin(LeafletGeoAdmin):
     readonly_fields = (
         'created_at', 'created_by', 'updated_at', 'updated_by',
     )
-    search_fields = ('name', )
+    search_fields = ('name',)
 
 
 ################
@@ -110,6 +115,9 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
     list_display = ('user', 'created_at', 'updated_at')
+    inlines = (
+        CartProductInline,
+    )
 
 
 @admin.register(CartProduct)

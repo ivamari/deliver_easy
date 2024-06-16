@@ -26,7 +26,7 @@ class Cart(models.Model):
 
 
 class CartProduct(models.Model):
-    """Промежуточная модель корзины/продуктов"""
+    """Промежуточная модель корзины/продукты"""
     cart = models.ForeignKey(Cart, models.CASCADE,
                              'cart_products',
                              verbose_name='Корзина пользователя')

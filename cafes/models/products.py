@@ -5,7 +5,7 @@ from cafes.models.categories import Category
 
 
 class Product(models.Model):
-    """Модель продуктов"""
+    """Продукты"""
     name = models.CharField('Название', max_length=20)
     price = models.IntegerField('Стоимость')
     category = models.ForeignKey(Category,
@@ -19,4 +19,4 @@ class Product(models.Model):
         verbose_name_plural = 'Продукты'
 
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.pk})'

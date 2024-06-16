@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from cafes.views.cafes import CafeView, CafeSearchView, CafeDepartmentView
-from cafes.views.carts import CartView, MeCartView
+from cafes.views.carts import CartView, MeCartView, MeCartDeleteView
 from cafes.views.categories import CategoryView, CategoryCookingTimeView
 from cafes.views.departments import DepartmentView
 from cafes.views.employees import EmployeeView
@@ -13,6 +13,7 @@ router1 = DefaultRouter()
 router2 = DefaultRouter()
 router3 = DefaultRouter()
 router4 = DefaultRouter()
+router5 = DefaultRouter()
 
 router1.register(r'search', CafeSearchView, 'organisations-search')
 router1.register(r'', CafeView, 'cafes')
@@ -35,7 +36,10 @@ urlpatterns = [
     path('cafes/', include(router1.urls)),
     path('departments/', include(router2.urls)),
     path('products/', include(router3.urls)),
-    path('clients/<int:client_id>/cart/', CartView.as_view(), name='client-cart'),
+    path('clients/<int:client_id>/cart/', CartView.as_view(),
+         name='client-cart'),
     path('clients/cart/me/', MeCartView.as_view(), name='me-client-cart'),
     path('cafe-departments/', include(router4.urls)),
+    path('clients/cart/me/<int:product_id>/delete/', MeCartDeleteView.as_view(),
+         name='me-client-cart'),
 ]

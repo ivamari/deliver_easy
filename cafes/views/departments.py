@@ -1,9 +1,9 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
 from cafes.models.departments import Department
 
-from cafes.serializers.api.departments import (DepartmentLittleListSerializer,
-                                               CafeDepartmentCreateUpdateSerializer,
-                                               )
+from cafes.serializers.api.departments import (
+    DepartmentLittleListSerializer,
+    CafeDepartmentCreateUpdateSerializer)
 from common.views.mixins import LCRUViewSet
 
 
@@ -14,8 +14,6 @@ class DepartmentView(LCRUViewSet):
     # permission_classes = [IsMyDepartment]
     queryset = Department.objects.all()
     serializer_class = CafeDepartmentCreateUpdateSerializer
-
-    # lookup_url_kwarg = 'department_id'
 
     http_method_names = ('get', 'post', 'patch', )
 

@@ -128,4 +128,3 @@ class CafeUpdateSerializer(GeoFeatureModelSerializer):
         if Cafe.objects.filter(location=value).exists():
             raise ParseError("Кафе с такой локацией уже существует.")
         return value
-

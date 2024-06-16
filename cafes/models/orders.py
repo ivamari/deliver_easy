@@ -9,14 +9,14 @@ User = get_user_model()
 
 
 class OrderStatus(BaseDictModelMixin):
-    """Модель статусов заказов"""
+    """Статусы заказов"""
     class Meta:
         verbose_name = 'Статус заказа'
         verbose_name_plural = 'Статусы заказов'
 
 
 class Order(models.Model):
-    """Модель заказа"""
+    """Заказ"""
     user = models.ManyToManyField(User,
                                   verbose_name='Пользователь'
                                   )

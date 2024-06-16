@@ -1,12 +1,14 @@
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework import mixins
+from rest_framework import mixins, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
 from cafes.models.carts import Cart
-from cafes.serializers.api.carts import (CartRetrieveSerializer,
-                                         MeCartRetrieveSerializer)
+from cafes.serializers.api.carts import (CartUserRetrieveSerializer,
+                                         MeCartRetrieveSerializer,
+                                         CartProductCreateUpdateSerializer,
+                                         CartProductDeleteSerializer, )
 
 
 @extend_schema_view(
@@ -17,7 +19,7 @@ from cafes.serializers.api.carts import (CartRetrieveSerializer,
 class CartView(GenericAPIView, mixins.RetrieveModelMixin):
     """Представление для получения корзины пользователя по id пользователя"""
     queryset = Cart.objects.all()
-    serializer_class = CartRetrieveSerializer
+    serializer_class = CartUserRetrieveSerializer
 
     http_method_names = ('get',)
 
@@ -32,16 +34,27 @@ class CartView(GenericAPIView, mixins.RetrieveModelMixin):
 
 
 @extend_schema_view(
-    get=extend_schema(
-        summary='Получить свою корзину',
-        tags=['Корзины']),
+    get=extend_schema(summary='Получить свою корзину', tags=['Корзины']),
+    put=extend_schema(summary='Добавить товар в корзину', tags=['Корзины']),
+    delete=extend_schema(summary='Удалить товар из корзины', tags=['Корзины']),
 )
-class MeCartView(GenericAPIView, mixins.RetrieveModelMixin):
+class MeCartView(GenericAPIView,
+                 mixins.RetrieveModelMixin,
+                 mixins.UpdateModelMixin,):
     """Получение корзины пользователя /me"""
     # permission_classes = [IsNotCorporate]
     queryset = Cart.objects.all()
-    serializer_class = MeCartRetrieveSerializer
-    http_method_names = ('get',)
+    serializer_class = CartProductCreateUpdateSerializer
+    http_method_names = ('get', 'patch', 'put',
+                         # 'delete',
+                         )
+
+    multi_serializer_class = {
+        'retrieve': MeCartRetrieveSerializer,
+        'update': CartProductCreateUpdateSerializer,
+        'partial_update': CartProductCreateUpdateSerializer,
+        # 'destroy': CartProductDeleteSerializer,
+    }
 
     def get_object(self):
         user = self.request.user
@@ -54,4 +67,36 @@ class MeCartView(GenericAPIView, mixins.RetrieveModelMixin):
         serializer = self.get_serializer(cart)
         return Response(serializer.data)
 
-# сделать так, чтобы если не было товаров в корзине, выводилось "корзина пуста"
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = CartProductCreateUpdateSerializer(instance,
+                                                       data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@extend_schema_view(
+    delete=extend_schema(summary='Удалить товар из корзины', tags=['Корзины']),
+)
+class MeCartDeleteView(GenericAPIView,
+                       mixins.DestroyModelMixin):
+    """Удалить товар из корзины"""
+    # permission_classes = [IsNotCorporate]
+    queryset = Cart.objects.all()
+    serializer_class = CartProductDeleteSerializer
+    http_method_names = ('delete', )
+
+    multi_serializer_class = {
+        'destroy': CartProductDeleteSerializer,
+    }
+
+    def delete(self, request, *args, **kwargs):
+        product_id = kwargs.get('product_id')
+        data = {'product_id': product_id}
+
+        serializer = self.get_serializer(data=data,
+                                         context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

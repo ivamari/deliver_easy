@@ -25,9 +25,9 @@ class DepartmentLittleListSerializer(ExtendedModelSerializer):
         )
 
 
-#################################
+###################################
 # CAFE_DEPARTMENTS_LIST_RETRIEVE
-#################################
+###################################
 
 class DepartmentCafeListRetrieveSerializer(ExtendedModelSerializer):
     """Сериализатор для кафе/отделов. Используется в GET-запросах к кафе"""
@@ -83,9 +83,9 @@ class CafeDepartmentRetrieveSerializer(ExtendedModelSerializer):
         read_only_fields = fields
 
 
-########################
-# CAFE_DEPARTMENTS_UPDATE
-########################
+##########################
+# CAFE_DEPARTMENTS_ADD
+##########################
 
 class DepartmentCafeRepresentationSerializer(ExtendedModelSerializer):
     """Сериализатор для кафе/отделов. Используется в to_representation"""
@@ -126,8 +126,7 @@ class DepartmentCafeCreateUpdateSerializer(ExtendedModelSerializer):
     """Сериализатор для кафе/отделов.
     Используется при добавлении отделов в кафе"""
     id = serializers.PrimaryKeyRelatedField(queryset=Department.objects.all(),
-                                            source='cafe_departments'
-                                            )
+                                            source='cafe_departments')
     manager = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         source='departments_manager',
@@ -175,13 +174,11 @@ class CafeDepartmentCreateUpdateSerializer(ExtendedModelSerializer):
     def update(self, cafe, validated_data):
         departments_data = validated_data.pop('departments')
         super().update(cafe, validated_data)
-        CafeDepartment.objects.filter(cafe=cafe).delete()
         self.create_cafe_departments(cafe, departments_data)
         cafe.save()
         return cafe
 
     def to_representation(self, instance):
         request = self.context.get('request')
-        return CafeDepartmentRepresentationSerializer(instance,
-                                                      context={
-                                                          'request': request}).data
+        return CafeDepartmentRepresentationSerializer(
+            instance, context={'request': request}).data
