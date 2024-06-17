@@ -1,5 +1,4 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework import viewsets, mixins
 
 from cafes.models.products import Product
 from cafes.serializers.api.products import (ProductCafeRetrieveSerializer,
@@ -8,6 +7,7 @@ from cafes.serializers.api.products import (ProductCafeRetrieveSerializer,
                                             ProductUpdateSerializer,
                                             ProductListSerializer,
                                             ProductRetrieveSerializer)
+from common.views.mixins import LCRUViewSet
 
 
 @extend_schema_view(
@@ -17,14 +17,8 @@ from cafes.serializers.api.products import (ProductCafeRetrieveSerializer,
                        tags=['Кафе: Товары']),
     create=extend_schema(summary='Добавить товар в кафе',
                          tags=['Кафе: Товары']),
-    # partial_update=extend_schema(summary='Изменить товар',
-    #                              tags=['Кафе: Товары']),
 )
-class ProductCafeView(viewsets.GenericViewSet,
-                      mixins.RetrieveModelMixin,
-                      mixins.ListModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.CreateModelMixin):
+class ProductCafeView(LCRUViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductCafeListSerializer
 
@@ -32,13 +26,10 @@ class ProductCafeView(viewsets.GenericViewSet,
 
     http_method_names = ('get', 'post', 'patch', 'delete',)
 
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return ProductCafeRetrieveSerializer
-        elif self.action == 'list':
-            return ProductCafeListSerializer
-        # elif self.action == 'create':
-        #     return ProductCafeCreateSerializer
+    multi_serializer_class = {
+        'list': ProductCafeListSerializer,
+        'retrieve': ProductCafeRetrieveSerializer,
+    }
 
     def get_queryset(self):
         cafe_id = self.kwargs.get('cafe_id')
@@ -55,11 +46,7 @@ class ProductCafeView(viewsets.GenericViewSet,
     partial_update=extend_schema(summary='Изменить товар',
                                  tags=['Товары']),
 )
-class ProductView(viewsets.GenericViewSet,
-                  mixins.RetrieveModelMixin,
-                  mixins.ListModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.CreateModelMixin):
+class ProductView(LCRUViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
 
@@ -67,12 +54,10 @@ class ProductView(viewsets.GenericViewSet,
 
     http_method_names = ('get', 'post', 'patch', 'delete',)
 
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return ProductRetrieveSerializer
-        elif self.action == 'list':
-            return ProductListSerializer
-        elif self.action == 'create':
-            return ProductCreateSerializer
-        elif self.action == 'partial_update':
-            return ProductUpdateSerializer
+    multi_serializer_class = {
+        'create': ProductCreateSerializer,
+        'list': ProductListSerializer,
+        'retrieve': ProductRetrieveSerializer,
+        'update': ProductUpdateSerializer,
+        'partial_update': ProductUpdateSerializer,
+    }

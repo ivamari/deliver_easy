@@ -207,4 +207,3 @@ class ReduceCartProductQuantitySerializer(serializers.Serializer):
         else:
             cart_product.delete()
         return cart_product
-

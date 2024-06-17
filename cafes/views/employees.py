@@ -2,9 +2,11 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework import viewsets, mixins
 
 from cafes.models.employees import Employee
-from cafes.serializers.api.employees import EmployeeListSerializer, \
-    EmployeeRetrieveSerializer, EmployeeCreateSerializer, \
-    EmployeeUpdateSerializer, EmployeeDeleteSerializer
+from cafes.serializers.api.employees import (EmployeeListSerializer,
+                                             EmployeeRetrieveSerializer,
+                                             EmployeeCreateSerializer,
+                                             EmployeeUpdateSerializer,
+                                             EmployeeDeleteSerializer)
 
 
 @extend_schema_view(

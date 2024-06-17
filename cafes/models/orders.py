@@ -21,28 +21,17 @@ class Order(models.Model):
                                   verbose_name='Пользователь'
                                   )
     location = geo_models.PointField('Локация')
-    status = models.ForeignKey(OrderStatus,
-                               models.RESTRICT,
-                               'status_orders',
-                               verbose_name='Статусы')
     order_date = models.DateField('Дата заказа', auto_now_add=True)
     order_time = models.TimeField('Время заказа', auto_now_add=True)
-    cooking_time = models.IntegerField('Время приготовления заказа',
-                                       null=True, blank=True)
-    delivery_time = models.IntegerField('Длительность доставки',
-                                        null=True,
-                                        blank=True)
-    order_price = models.IntegerField('Стоимость заказа',
-                                      null=True, blank=True)
-    total_price = models.IntegerField('Сумма заказ + доставка', blank=True,
-                                      null=True)
+    products = models.ManyToManyField(Product, through='OrderProduct',
+                                      related_name='order_products')
 
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'Корзина {self.user}'
+        return f'Заказ {self.user}'
 
 
 class OrderProduct(models.Model):

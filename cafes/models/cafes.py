@@ -16,6 +16,7 @@ class Cafe(InfoMixin):
                               'cafes_owners',
                               verbose_name='Владелец')
     location = gis_models.PointField(srid=4326, verbose_name='Локация')
+    address = models.CharField('Адрес кафе', max_length=256)
     employees = models.ManyToManyField(User,
                                        'cafes_employees',
                                        verbose_name='Сотрудники',

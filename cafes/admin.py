@@ -131,7 +131,7 @@ class OrderStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('status', 'order_date', 'order_time',)
+    list_display = ('order_date', 'order_time',)
 
 
 @admin.register(OrderProduct)

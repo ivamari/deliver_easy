@@ -8,6 +8,7 @@ from cafes.views.carts import (CartView, MeCartView, MeCartDeleteView,
 from cafes.views.categories import CategoryView
 from cafes.views.departments import DepartmentView
 from cafes.views.employees import EmployeeView
+# from cafes.views.orders import MeOrderView
 from cafes.views.positions import PositionView
 from cafes.views.products import ProductCafeView, ProductView
 
@@ -15,6 +16,7 @@ router_cafe = DefaultRouter()
 router_departments = DefaultRouter()
 router_categories = DefaultRouter()
 router_cafe_departments = DefaultRouter()
+router_orders = DefaultRouter()
 
 router_cafe.register(r'search', CafeSearchView, 'organisations-search')
 router_cafe.register(r'', CafeView, 'cafes')
@@ -46,4 +48,6 @@ urlpatterns = [
          name='increase-product-quantity'),
     path('clients/cart/me/<int:product_id>/reduce-quantity/',
          ReduceProductQuantityView.as_view(), name='reduce-product-quantity'),
+    # path('clients/orders/me/<int:order_id>/', MeOrderView.as_view(),
+    #      name='me-order'),
 ]

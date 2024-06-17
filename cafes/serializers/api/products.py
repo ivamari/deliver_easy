@@ -11,9 +11,9 @@ from common.serializers.mixins import ExtendedModelSerializer
 User = get_user_model()
 
 
-###############
+#################
 # PRODUCT_CAFE
-###############
+#################
 
 class ProductCafeListSerializer(ExtendedModelSerializer):
     """Сериализатор для списка товаров отдельного кафе"""
@@ -93,7 +93,6 @@ class ProductCreateSerializer(ExtendedModelSerializer):
             'name',
             'price',
             'category',
-            # 'cafe'
         )
 
     def validate_name(self, value):
@@ -116,7 +115,6 @@ class ProductUpdateSerializer(ExtendedModelSerializer):
             'name',
             'price',
             'category',
-            # 'cafe'
         )
 
 
