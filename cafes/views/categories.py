@@ -1,4 +1,5 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
+from rest_framework.permissions import IsAdminUser
 
 from cafes.models.products import Category
 from cafes.serializers.api.categories import (
@@ -19,7 +20,7 @@ from common.views.mixins import LCRUViewSet
                                  tags=['Товары: Категории']),
 )
 class CategoryView(LCRUViewSet):
-    permission_classes = []
+    permission_classes = [IsAdminUser]
     queryset = Category.objects.all()
     serializer_class = CategoryListSerializer
 

@@ -1,12 +1,12 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
-from rest_framework import viewsets, mixins
 
 from cafes.models.employees import Employee
+from cafes.permissions import IsMyCafeEmployee
 from cafes.serializers.api.employees import (EmployeeListSerializer,
                                              EmployeeRetrieveSerializer,
-                                             EmployeeCreateSerializer,
                                              EmployeeUpdateSerializer,
                                              EmployeeDeleteSerializer)
+from common.views.mixins import LCRUDViewSet
 
 
 @extend_schema_view(
@@ -14,39 +14,29 @@ from cafes.serializers.api.employees import (EmployeeListSerializer,
                        tags=['Кафе: Сотрудники']),
     retrieve=extend_schema(summary='Деталка сотрудника кафе',
                            tags=['Кафе: Сотрудники']),
-    create=extend_schema(summary='Создать сотрудника кафе',
-                         tags=['Кафе: Сотрудники']),
+    update=extend_schema(
+        summary='Обновить должность сотрудника кафе',
+        tags=['Кафе: Сотрудники']),
     partial_update=extend_schema(
-        summary='Изменить сотрудника кафе частично',
+        summary='Обновить должность сотрудника кафе',
         tags=['Кафе: Сотрудники']),
     destroy=extend_schema(summary='Удалить сотрудника из кафе',
                           tags=['Кафе: Сотрудники']),
 )
-class EmployeeView(viewsets.GenericViewSet,
-                   mixins.ListModelMixin,
-                   mixins.CreateModelMixin,
-                   mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.RetrieveModelMixin):
+class EmployeeView(LCRUDViewSet):
+    permission_classes = [IsMyCafeEmployee]
     queryset = Employee.objects.all()
-    serializer_class = EmployeeListSerializer
 
     lookup_url_kwarg = 'employee_id'
-    http_method_names = ('get', 'post', 'patch', 'delete', )
+    http_method_names = ('get', 'post', 'patch', 'delete',)
 
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return EmployeeListSerializer
-        elif self.action == 'retrieve':
-            return EmployeeRetrieveSerializer
-        elif self.action == 'create':
-            return EmployeeCreateSerializer
-        elif self.action == 'update':
-            return EmployeeUpdateSerializer
-        elif self.action == 'partial_update':
-            return EmployeeUpdateSerializer
-        elif self.action == 'delete':
-            return EmployeeDeleteSerializer
+    multi_serializer_class = {
+        'list': EmployeeListSerializer,
+        'retrieve': EmployeeRetrieveSerializer,
+        'update': EmployeeUpdateSerializer,
+        'partial_update': EmployeeUpdateSerializer,
+        'delete': EmployeeDeleteSerializer,
+    }
 
     def get_queryset(self):
         cafe_id = self.kwargs.get('cafe_id')

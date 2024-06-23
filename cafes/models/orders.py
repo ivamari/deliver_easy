@@ -1,7 +1,9 @@
+from django.contrib.gis.db.models.functions import Distance
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models as geo_models
 
+from cafes.models.cafes import Cafe
 from cafes.models.products import Product
 from common.models.mixins import BaseDictModelMixin
 
@@ -10,6 +12,7 @@ User = get_user_model()
 
 class OrderStatus(BaseDictModelMixin):
     """Статусы заказов"""
+
     class Meta:
         verbose_name = 'Статус заказа'
         verbose_name_plural = 'Статусы заказов'
@@ -23,6 +26,9 @@ class Order(models.Model):
     location = geo_models.PointField('Локация')
     order_date = models.DateField('Дата заказа', auto_now_add=True)
     order_time = models.TimeField('Время заказа', auto_now_add=True)
+    nearest_cafe = models.ForeignKey(Cafe, verbose_name='Ближайшее кафе',
+                                     null=True, blank=True,
+                                     on_delete=models.SET_NULL)
     products = models.ManyToManyField(Product, through='OrderProduct',
                                       related_name='order_products')
 
@@ -32,6 +38,15 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Заказ {self.user}'
+
+    def save(self, *args, **kwargs):
+        if self.location:
+            cafes = Cafe.objects.annotate(
+                distance=Distance('location', self.location)).order_by(
+                'distance')
+            if cafes.exists():
+                self.nearest_cafe = cafes.first()
+        super().save(*args, **kwargs)
 
 
 class OrderProduct(models.Model):

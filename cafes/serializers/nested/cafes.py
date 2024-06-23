@@ -9,4 +9,3 @@ class CafeShortSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name')
-

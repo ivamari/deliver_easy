@@ -5,7 +5,7 @@ from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.cafes import Cafe
 from cafes.models.departments import Department
 from common.serializers.mixins import ExtendedModelSerializer
-from users.serializers.nested.users import (UserShortSerializer,)
+from users.serializers.nested.users import (UserShortSerializer, )
 
 User = get_user_model()
 
@@ -34,8 +34,7 @@ class DepartmentCafeListRetrieveSerializer(ExtendedModelSerializer):
     id = serializers.IntegerField(source='department.id')
     name = serializers.CharField(source='department.name')
     manager = UserShortSerializer()
-    members = UserShortSerializer(read_only=True, many=True,
-                                  source='members_set.all')
+    members = UserShortSerializer(read_only=True, many=True)
 
     class Meta:
         model = CafeDepartment
@@ -51,7 +50,11 @@ class CafeDepartmentListSerializer(ExtendedModelSerializer):
     """Сериализатор для списка кафе с отделами"""
     owner = UserShortSerializer()
     departments = DepartmentCafeListRetrieveSerializer(many=True,
-                                                       source='cafe_departments')
+                                                       source='cafe_departments'
+                                                       )
+    pax = serializers.IntegerField()
+    departments_count = serializers.IntegerField()
+    can_manage = serializers.BooleanField()
 
     class Meta:
         model = Cafe
@@ -61,6 +64,9 @@ class CafeDepartmentListSerializer(ExtendedModelSerializer):
             'owner',
             'location',
             'departments',
+            'pax',
+            'departments_count',
+            'can_manage',
         )
         read_only_fields = fields
 
@@ -70,6 +76,9 @@ class CafeDepartmentRetrieveSerializer(ExtendedModelSerializer):
     owner = UserShortSerializer()
     departments = DepartmentCafeListRetrieveSerializer(many=True,
                                                        source='cafe_departments')
+    pax = serializers.IntegerField()
+    departments_count = serializers.IntegerField()
+    can_manage = serializers.BooleanField()
 
     class Meta:
         model = Cafe
@@ -79,6 +88,9 @@ class CafeDepartmentRetrieveSerializer(ExtendedModelSerializer):
             'owner',
             'location',
             'departments',
+            'pax',
+            'departments_count',
+            'can_manage',
         )
         read_only_fields = fields
 
@@ -92,7 +104,7 @@ class DepartmentCafeRepresentationSerializer(ExtendedModelSerializer):
     id = serializers.IntegerField(source='department.id')
     name = serializers.CharField(source='department.name')
     manager = UserShortSerializer()
-    members = UserShortSerializer()
+    members = UserShortSerializer(many=True)
 
     class Meta:
         model = CafeDepartment
@@ -134,6 +146,7 @@ class DepartmentCafeCreateUpdateSerializer(ExtendedModelSerializer):
     members = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(),
         source='departments_members',
+        many=True
     )
 
     class Meta:
@@ -143,6 +156,32 @@ class DepartmentCafeCreateUpdateSerializer(ExtendedModelSerializer):
             'manager',
             'members',
         )
+
+    def validate(self, data):
+        manager = data.get('departments_manager')
+        cafe = data.get('cafe_departments')
+
+        if Cafe.objects.filter(pk=cafe.id, owner=manager).exists():
+            raise serializers.ValidationError(
+                'Владелец кафе не может быть менеджером.')
+
+        cafe_department = self.instance
+        members = data.get('departments_members')
+
+        for member in members:
+            if cafe_department:
+                other_departments = CafeDepartment.objects.exclude(
+                    id=cafe_department.id).filter(member=member)
+            else:
+                other_departments = CafeDepartment.objects.filter(
+                    members=member)
+
+            if other_departments.exists():
+                raise serializers.ValidationError(
+                    f'Сотрудник {member} уже состоит в другом отделе.'
+                )
+
+        return data
 
 
 class CafeDepartmentCreateUpdateSerializer(ExtendedModelSerializer):
@@ -163,13 +202,18 @@ class CafeDepartmentCreateUpdateSerializer(ExtendedModelSerializer):
     def create_cafe_departments(self, cafe, departments_cafe):
         cafe_departments = []
         for department in departments_cafe:
-            cafe_departments.append(
-                CafeDepartment(cafe=cafe,
-                               department=department['cafe_departments'],
-                               manager=department['departments_manager'],
-                               members=department['departments_members'],
-                               ))
+            cafe_department = CafeDepartment(
+                cafe=cafe,
+                department=department['cafe_departments'],
+                manager=department['departments_manager']
+            )
+            cafe_departments.append(cafe_department)
+
         CafeDepartment.objects.bulk_create(cafe_departments)
+
+        for cafe_department, department in zip(cafe_departments,
+                                               departments_cafe):
+            cafe_department.members.set(department['departments_members'])
 
     def update(self, cafe, validated_data):
         departments_data = validated_data.pop('departments')

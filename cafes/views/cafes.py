@@ -3,11 +3,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 
 from cafes.backends import MyCafe
 from cafes.filters import CafeFilter
 from cafes.models.cafes import Cafe
-from cafes.permissions import IsMyCafe
+from cafes.permissions import IsMyCafe, IsMyCafeDepartment
 from cafes.serializers.api.cafes import (CafeRetrieveSerializer,
                                          CafeListSerializer,
                                          CafeCreateSerializer,
@@ -25,33 +26,14 @@ from common.views.mixins import LCRUViewSet, ListViewSet
                        tags=['Search']),
 )
 class CafeSearchView(ListViewSet):
+    """Краткая информация о кафе"""
+    permission_classes = [IsAuthenticated]
     queryset = Cafe.objects.all()
     serializer_class = CafeSearchListSerializer
 
 
-@extend_schema_view(
-    retrieve=extend_schema(summary='Получить кафе', tags=['Кафе']),
-    list=extend_schema(summary='Список кафе', tags=['Кафе']),
-    create=extend_schema(summary='Создать кафе', tags=['Кафе']),
-    update=extend_schema(summary='Изменить кафе', tags=['Кафе']),
-    partial_update=extend_schema(summary='Изменить кафе частично',
-                                 tags=['Кафе']),
-)
-class CafeView(LCRUViewSet):
-    """Представление для с краткой информацией о кафе"""
-    permission_classes = [IsMyCafe]
+class BaseCafeView(LCRUViewSet):
     queryset = Cafe.objects.all()
-    serializer_class = CafeListSerializer
-
-    multi_serializer_class = {
-        'list': CafeListSerializer,
-        'retrieve': CafeRetrieveSerializer,
-        'create': CafeCreateSerializer,
-        'update': CafeUpdateSerializer,
-        'partial_update': CafeUpdateSerializer,
-    }
-
-    http_method_names = ('get', 'post', 'patch',)
 
     filter_backends = (
         OrderingFilter,
@@ -85,15 +67,40 @@ class CafeView(LCRUViewSet):
 
 
 @extend_schema_view(
+    retrieve=extend_schema(summary='Получить кафе', tags=['Кафе']),
+    list=extend_schema(summary='Список кафе', tags=['Кафе']),
+    create=extend_schema(summary='Создать кафе', tags=['Кафе']),
+    update=extend_schema(summary='Изменить кафе', tags=['Кафе']),
+    partial_update=extend_schema(summary='Изменить кафе частично',
+                                 tags=['Кафе']),
+)
+class CafeView(BaseCafeView):
+    """Краткая информация о кафе"""
+    permission_classes = [IsMyCafe]
+    queryset = Cafe.objects.all()
+
+    multi_serializer_class = {
+        'list': CafeListSerializer,
+        'retrieve': CafeRetrieveSerializer,
+        'create': CafeCreateSerializer,
+        'update': CafeUpdateSerializer,
+        'partial_update': CafeUpdateSerializer,
+    }
+
+    http_method_names = ('get', 'post', 'patch',)
+
+
+@extend_schema_view(
     list=extend_schema(summary='Список кафе с отделами', tags=['Кафе: Отделы']),
     retrieve=extend_schema(summary='Получить кафе с отделами',
                            tags=['Кафе: Отделы']),
-    update=extend_schema(summary='Добавить отдел в кафе', tags=['Кафе: Отделы']),
+    update=extend_schema(summary='Добавить отдел в кафе',
+                         tags=['Кафе: Отделы']),
 )
-class CafeDepartmentView(LCRUViewSet):
+class CafeDepartmentView(BaseCafeView):
     """Представление для кафе с отделами"""
+    permission_classes = [IsMyCafeDepartment]
     queryset = Cafe.objects.all()
-    serializer_class = CafeDepartmentListSerializer
 
     multi_serializer_class = {
         'list': CafeDepartmentListSerializer,

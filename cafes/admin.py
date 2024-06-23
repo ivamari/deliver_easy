@@ -16,6 +16,7 @@ from leaflet.admin import LeafletGeoAdmin
 ##############################
 # INLINES
 ##############################
+
 class CafeDepartmentInline(admin.TabularInline):
     model = CafeDepartment
     fields = ('cafe', 'department', 'manager', 'members',)
@@ -24,6 +25,11 @@ class CafeDepartmentInline(admin.TabularInline):
 class CartProductInline(admin.TabularInline):
     model = CartProduct
     fields = ('cart', 'product', 'amount',)
+
+
+class EmployeeInline(admin.TabularInline):
+    model = Employee
+    fields = ('user', 'position',)
 
 
 ################
@@ -35,6 +41,7 @@ class CafeAdmin(LeafletGeoAdmin):
     list_display_links = ('id', 'name',)
     inlines = (
         CafeDepartmentInline,
+        EmployeeInline,
     )
     readonly_fields = (
         'created_at', 'created_by', 'updated_at', 'updated_by',
@@ -59,11 +66,6 @@ class EmployeeAdmin(admin.ModelAdmin):
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'name',)
     list_display_links = ('id', 'name',)
-
-
-@admin.register(CafeDepartment)
-class CafeDepartmentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'cafe', 'department')
 
 
 @admin.register(Position)
@@ -130,7 +132,7 @@ class OrderStatusAdmin(admin.ModelAdmin):
 
 
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
+class OrderAdmin(LeafletGeoAdmin):
     list_display = ('order_date', 'order_time',)
 
 
