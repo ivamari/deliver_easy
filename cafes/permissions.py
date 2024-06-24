@@ -41,7 +41,7 @@ class IsMyDepartment(IsAuthenticated):
 
 class IsMyCart(IsAuthenticated):
     def has_object_permission(self, request, view, obj):
-        # если запрос от директора организации
+        # если запрос от владельца корзины
         if obj.user == request.user:
             return True
         return False
@@ -59,5 +59,13 @@ class IsMyCafeEmployee(IsAuthenticated):
 
         # если пользователь это менеджер отдела
         if obj.manager.user == request.user:
+            return True
+        return False
+
+
+class IsMyOrder(IsAuthenticated):
+    def has_object_permission(self, request, view, obj):
+        # если запрос от владельца заказа
+        if obj.user == request.user:
             return True
         return False

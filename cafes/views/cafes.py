@@ -1,12 +1,6 @@
-from django.db.models import Count, Case, When
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
-from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAuthenticated
-
-from cafes.backends import MyCafe
-from cafes.filters import CafeFilter
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from cafes.models.cafes import Cafe
 from cafes.permissions import IsMyCafe, IsMyCafeDepartment
 from cafes.serializers.api.cafes import (CafeRetrieveSerializer,
@@ -18,7 +12,8 @@ from cafes.serializers.api.departments import (
     CafeDepartmentListSerializer,
     CafeDepartmentRetrieveSerializer,
     CafeDepartmentCreateUpdateSerializer)
-from common.views.mixins import LCRUViewSet, ListViewSet
+from cafes.views.nested.nested import BaseCafeView
+from common.views.mixins import ListViewSet
 
 
 @extend_schema_view(
@@ -26,44 +21,10 @@ from common.views.mixins import LCRUViewSet, ListViewSet
                        tags=['Search']),
 )
 class CafeSearchView(ListViewSet):
-    """Краткая информация о кафе"""
+    """Список кафе с краткой информацией"""
     permission_classes = [IsAuthenticated]
     queryset = Cafe.objects.all()
     serializer_class = CafeSearchListSerializer
-
-
-class BaseCafeView(LCRUViewSet):
-    queryset = Cafe.objects.all()
-
-    filter_backends = (
-        OrderingFilter,
-        SearchFilter,
-        DjangoFilterBackend,
-        MyCafe,
-    )
-
-    search_fields = ('name',)
-    filterset_class = CafeFilter
-    ordering = ('name', 'id',)
-
-    def get_queryset(self):
-        queryset = Cafe.objects.select_related(
-            'owner',
-        ).prefetch_related(
-            'employees',
-            'departments',
-        ).annotate(
-            # количество сотрудников в кафе
-            pax=Count('employees', distinct=True),
-            # количество отделов кафе
-            departments_count=Count('departments', distinct=True),
-            # может ли текущий пользователь управлять кафе (если владелец)
-            can_manage=Case(
-                When(owner=self.request.user, then=True),
-                default=False,
-            )
-        )
-        return queryset
 
 
 @extend_schema_view(
@@ -75,8 +36,6 @@ class BaseCafeView(LCRUViewSet):
                                  tags=['Кафе']),
 )
 class CafeView(BaseCafeView):
-    """Краткая информация о кафе"""
-    permission_classes = [IsMyCafe]
     queryset = Cafe.objects.all()
 
     multi_serializer_class = {
@@ -85,6 +44,14 @@ class CafeView(BaseCafeView):
         'create': CafeCreateSerializer,
         'update': CafeUpdateSerializer,
         'partial_update': CafeUpdateSerializer,
+    }
+
+    multi_permission_classes = {
+        'list': [IsMyCafe],
+        'retrieve': [IsMyCafe],
+        'create': [IsAdminUser],
+        'update': [IsMyCafe],
+        'partial_update': [IsMyCafe],
     }
 
     http_method_names = ('get', 'post', 'patch',)

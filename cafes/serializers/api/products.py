@@ -84,7 +84,9 @@ class ProductRetrieveSerializer(ExtendedModelSerializer):
 class ProductCreateSerializer(ExtendedModelSerializer):
     """Сериализатор для создания товара"""
     category = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all())
+        queryset=Category.objects.all(),
+        # source='category_products'
+    )
 
     class Meta:
         model = Product

@@ -8,7 +8,8 @@ from cafes.views.carts import (CartView, MeCartView, MeCartDeleteView,
 from cafes.views.categories import CategoryView
 from cafes.views.departments import DepartmentView
 from cafes.views.employees import EmployeeView
-# from cafes.views.orders import OrderView
+from cafes.views.orders import OrderCreateView, OrderListView, \
+    MeOrderRetrieveView, MeOrderListView
 from cafes.views.positions import PositionView
 from cafes.views.products import ProductCafeView, ProductView
 
@@ -48,5 +49,12 @@ urlpatterns = [
          name='increase-product-quantity'),
     path('clients/cart/me/<int:product_id>/reduce-quantity/',
          ReduceProductQuantityView.as_view(), name='reduce-product-quantity'),
-    # path('clients/order/', OrderView.as_view(), name='me-client-order'),
+    path('clients/order/me/create/', OrderCreateView.as_view(),
+         name='me-client-order'),
+    path('clients/<int:client_id>/order/', OrderListView.as_view(),
+         name='client-order'),
+    path('clients/order/me/<int:order_id>/', MeOrderRetrieveView.as_view(),
+         name='client-order'),
+    path('clients/orders/me/', MeOrderListView.as_view(),
+         name='client-order'),
 ]

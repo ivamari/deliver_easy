@@ -48,6 +48,20 @@ class ExtendedView:
         # Trying to get action serializer or default
         return self.multi_serializer_class.get(action) or self.serializer_class
 
+    def get_permissions(self):
+        # define request action or method
+        if hasattr(self, 'action'):
+            action = self.action
+        else:
+            action = self.request.method
+
+        if self.multi_permission_classes:
+            permissions = self.multi_permission_classes.get(action)
+            if permissions:
+                return [permission() for permission in permissions]
+
+        return [permission() for permission in self.permission_classes]
+
 
 class ExtendedGenericViewSet(ExtendedView, GenericViewSet):
     pass

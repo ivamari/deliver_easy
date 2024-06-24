@@ -43,4 +43,3 @@ class Cafe(InfoMixin):
             defaults={'user': self.owner, }
         )
         return obj
-

@@ -35,7 +35,8 @@ class Employee(models.Model):
 
 
 @receiver(m2m_changed, sender=CafeDepartment.members.through)
-def manage_employee_department_membership(sender, instance, action, reverse, pk_set, **kwargs):
+def manage_employee_department_membership(sender, instance, action, reverse,
+                                          pk_set, **kwargs):
     if action == "post_add":
         for user_id in pk_set:
             user = User.objects.get(pk=user_id)

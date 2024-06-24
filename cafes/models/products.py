@@ -12,11 +12,30 @@ class Product(models.Model):
                                  models.RESTRICT,
                                  'category_products',
                                  verbose_name='Категория')
-    cafe = models.ManyToManyField(Cafe, verbose_name='Кафе', blank=True)
+    cafe = models.ManyToManyField(Cafe, verbose_name='Кафе',
+                                  through='CafeProduct'
+                                  )
 
     class Meta:
-        verbose_name = 'Продукт'
-        verbose_name_plural = 'Продукты'
+        verbose_name = 'Товар'
+        verbose_name_plural = 'Товары'
 
     def __str__(self):
         return f'{self.name} ({self.pk})'
+
+
+class CafeProduct(models.Model):
+    """Кафе/продукты"""
+    cafe = models.ForeignKey(Cafe, on_delete=models.CASCADE,
+                             related_name='products_cafe',
+                             verbose_name='Кафе')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                related_name='cafe_products',
+                                verbose_name='Продукты')
+
+    class Meta:
+        verbose_name = 'Товары кафе'
+        verbose_name_plural = 'Товары кафе'
+
+    def __str__(self):
+        return f'{self.cafe} - {self.product}'

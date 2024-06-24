@@ -6,7 +6,8 @@ from cafes.serializers.api.products import (ProductCafeRetrieveSerializer,
                                             ProductCreateSerializer,
                                             ProductUpdateSerializer,
                                             ProductListSerializer,
-                                            ProductRetrieveSerializer)
+                                            ProductRetrieveSerializer,
+                                            )
 from common.views.mixins import LCRUViewSet
 
 
@@ -15,8 +16,8 @@ from common.views.mixins import LCRUViewSet
                            tags=['Кафе: Товары']),
     list=extend_schema(summary='Список товаров определенного кафе',
                        tags=['Кафе: Товары']),
-    create=extend_schema(summary='Добавить товар в кафе',
-                         tags=['Кафе: Товары']),
+    update=extend_schema(summary='Добавить отдел в кафе',
+                         tags=['Кафе: Отделы']),
 )
 class ProductCafeView(LCRUViewSet):
     queryset = Product.objects.all()

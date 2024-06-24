@@ -46,7 +46,7 @@ class CartView(GenericAPIView, mixins.RetrieveModelMixin):
 class MeCartView(GenericAPIView,
                  mixins.RetrieveModelMixin,
                  mixins.UpdateModelMixin,):
-    """Получение корзины пользователя /me"""
+    """Получение/обновление корзины пользователя /me"""
     permission_classes = [IsMyCart]
     queryset = Cart.objects.all()
     serializer_class = CartProductCreateUpdateSerializer

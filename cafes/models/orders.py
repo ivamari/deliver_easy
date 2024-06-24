@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models as geo_models
 
 from cafes.models.cafes import Cafe
+from cafes.models.carts import CartProduct
 from cafes.models.products import Product
 from common.models.mixins import BaseDictModelMixin
 
@@ -20,9 +21,11 @@ class OrderStatus(BaseDictModelMixin):
 
 class Order(models.Model):
     """Заказ"""
-    user = models.ManyToManyField(User,
-                                  verbose_name='Пользователь'
-                                  )
+    user = models.ForeignKey(User,
+                             related_name='orders_user',
+                             on_delete=models.CASCADE,
+                             verbose_name='Пользователь',
+                             )
     location = geo_models.PointField('Локация')
     order_date = models.DateField('Дата заказа', auto_now_add=True)
     order_time = models.TimeField('Время заказа', auto_now_add=True)
@@ -37,7 +40,7 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'Заказ {self.user}'
+        return f'Заказ {self.user}, номер заказа {self.pk}'
 
     def save(self, *args, **kwargs):
         if self.location:
@@ -47,6 +50,16 @@ class Order(models.Model):
             if cafes.exists():
                 self.nearest_cafe = cafes.first()
         super().save(*args, **kwargs)
+        self.populate_products_from_cart()
+
+    def populate_products_from_cart(self):
+        cart_products = CartProduct.objects.filter(cart__user=self.user)
+        for cart_product in cart_products:
+            OrderProduct.objects.create(order=self,
+                                        product=cart_product.product,
+                                        amount=cart_product.amount)
+
+        cart_products.delete()
 
 
 class OrderProduct(models.Model):

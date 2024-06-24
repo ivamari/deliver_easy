@@ -8,6 +8,7 @@ from cafes.models.employees import Employee
 from cafes.models.orders import OrderStatus, Order, OrderProduct
 from cafes.models.positions import Position
 from cafes.models.products import Product
+# from cafes.models.products import Product
 from cafes.models.replacements import Replacement, ReplacementStatus
 from cafes.models.departments import Department
 from leaflet.admin import LeafletGeoAdmin
@@ -16,6 +17,7 @@ from leaflet.admin import LeafletGeoAdmin
 ##############################
 # INLINES
 ##############################
+
 
 class CafeDepartmentInline(admin.TabularInline):
     model = CafeDepartment
@@ -30,6 +32,13 @@ class CartProductInline(admin.TabularInline):
 class EmployeeInline(admin.TabularInline):
     model = Employee
     fields = ('user', 'position',)
+
+
+class OrderProductInline(admin.TabularInline):
+    model = OrderProduct
+    fields = ('order', 'product', 'amount',)
+    readonly_fields = ('order', 'product', 'amount',)
+    can_delete = False
 
 
 ################
@@ -133,9 +142,11 @@ class OrderStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(LeafletGeoAdmin):
-    list_display = ('order_date', 'order_time',)
+    list_display = ('id', 'user', 'order_date', 'order_time',)
+    list_display_links = ('user',)
+    readonly_fields = ('nearest_cafe',)
+    inlines = (OrderProductInline,)
 
-
-@admin.register(OrderProduct)
-class OrderProductAdmin(admin.ModelAdmin):
-    list_display = ('order', 'product', 'amount',)
+# @admin.register(OrderProduct)
+# class OrderProductAdmin(admin.ModelAdmin):
+#     list_display = ('order', 'product', 'amount',)
