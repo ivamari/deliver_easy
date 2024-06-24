@@ -37,9 +37,3 @@ class User(AbstractUser):
 def post_save_user(sender, instance, created, **kwargs):
     if not hasattr(instance, 'profile'):
         Profile.objects.create(user=instance)
-
-
-# # в существующий класс добавляем новый параметр
-# Group.add_to_class(
-#     'code', models.CharField('Code', max_length=32, null=True, unique=True)
-# )
