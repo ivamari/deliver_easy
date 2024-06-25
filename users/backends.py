@@ -22,7 +22,6 @@ class AuthBackend(object):
                 Q(email=username) |
                 Q(phone_number=username)
             )
-
         except User.DoesNotExist:
             return None
         return user if user.check_password(password) else None

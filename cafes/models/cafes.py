@@ -6,6 +6,7 @@ from cafes.constants import OWNER_POSITION
 from cafes.models.departments import Department
 from common.models.mixins import InfoMixin
 
+
 User = get_user_model()
 
 

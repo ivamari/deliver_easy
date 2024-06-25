@@ -6,8 +6,10 @@ from cafes.serializers.api.categories import (
     CategoryListSerializer,
     CategoryUpdateSerializer,
     CategoryCreateSerializer,
-    CategoryRetrieveSerializer,)
+    CategoryRetrieveSerializer
+)
 from common.views.mixins import LCRUViewSet
+
 
 
 @extend_schema_view(

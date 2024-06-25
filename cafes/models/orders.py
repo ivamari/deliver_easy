@@ -1,12 +1,13 @@
-from django.contrib.gis.db.models.functions import Distance
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.gis.db import models as geo_models
+from django.contrib.gis.db.models.functions import Distance
 
 from cafes.models.cafes import Cafe
 from cafes.models.carts import CartProduct
 from cafes.models.products import Product
 from common.models.mixins import BaseDictModelMixin
+
 
 User = get_user_model()
 

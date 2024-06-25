@@ -6,10 +6,12 @@ from cafes.models.positions import Position
 
 from cafes.serializers.nested.cafes import CafeShortSerializer
 from cafes.serializers.nested.positions import PositionShortSerializer
+
 from common.serializers.mixins import ExtendedModelSerializer
 from users.serializers.nested.users import UserEmployeeSerializer
 
 import logging
+
 
 logger = logging.getLogger(__name__)
 

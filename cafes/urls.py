@@ -1,17 +1,30 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from cafes.views.cafes import CafeView, CafeSearchView, CafeDepartmentView
-from cafes.views.carts import (CartView, MeCartView, MeCartDeleteView,
-                               IncreaseProductQuantityView,
-                               ReduceProductQuantityView)
+from cafes.views.cafes import (
+    CafeView,
+    CafeSearchView,
+    CafeDepartmentView
+)
+from cafes.views.carts import (
+    CartView,
+    MeCartView,
+    MeCartDeleteView,
+    IncreaseProductQuantityView,
+    ReduceProductQuantityView
+)
 from cafes.views.categories import CategoryView
 from cafes.views.departments import DepartmentView
 from cafes.views.employees import EmployeeView
-from cafes.views.orders import OrderCreateView, OrderListView, \
-    MeOrderRetrieveView, MeOrderListView
+from cafes.views.orders import (
+    OrderCreateView,
+    OrderListView,
+    MeOrderRetrieveView,
+    MeOrderListView
+)
 from cafes.views.positions import PositionView
-from cafes.views.products import ProductCafeView, ProductView
+from cafes.views.products import ProductView
+
 
 router_cafe = DefaultRouter()
 router_departments = DefaultRouter()
@@ -30,8 +43,6 @@ router_departments.register(r'(?P<department_id>[^/.]+)/positions',
                             basename='positions')
 router_categories.register(r'categories', CategoryView, basename='categories')
 router_categories.register('', ProductView, 'products')
-router_cafe.register(r'(?P<cafe_id>[^/.]+)/products', ProductCafeView,
-                     basename='products')
 router_departments.register(r'', DepartmentView, basename='departments')
 
 urlpatterns = [

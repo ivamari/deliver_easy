@@ -1,10 +1,13 @@
 from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 
 from cafes.models.carts import Cart, CartProduct
 from cafes.models.products import Product
 from cafes.serializers.nested.products import ProductShortSerializer
+
 from common.serializers.mixins import ExtendedModelSerializer
+
 
 User = get_user_model()
 

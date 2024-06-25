@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 from cafes.models.departments import Department
 
+
 User = get_user_model()
 
 

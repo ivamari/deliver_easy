@@ -1,10 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from cafes.models.orders import Order
 from cafes.serializers.nested.cafes import CafeShortSerializer
 from cafes.serializers.nested.products import ProductShortSerializer
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
+
 
 User = get_user_model()
 

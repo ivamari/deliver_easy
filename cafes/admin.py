@@ -1,17 +1,15 @@
 from django.contrib import admin
+from leaflet.admin import LeafletGeoAdmin
 
-from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.cafes import Cafe
+from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.carts import Cart, CartProduct
 from cafes.models.categories import Category
 from cafes.models.employees import Employee
 from cafes.models.orders import OrderStatus, Order, OrderProduct
 from cafes.models.positions import Position
 from cafes.models.products import Product
-# from cafes.models.products import Product
-from cafes.models.replacements import Replacement, ReplacementStatus
 from cafes.models.departments import Department
-from leaflet.admin import LeafletGeoAdmin
 
 
 ##############################

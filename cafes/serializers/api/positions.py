@@ -5,6 +5,7 @@ from rest_framework.exceptions import ParseError
 from cafes.models.departments import Department
 from cafes.models.positions import Position
 from cafes.serializers.nested.departments import DepartmentShortSerializer
+
 from common.serializers.mixins import ExtendedModelSerializer
 
 User = get_user_model()

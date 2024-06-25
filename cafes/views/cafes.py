@@ -1,19 +1,23 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
-
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+from common.views.mixins import ListViewSet
 from cafes.models.cafes import Cafe
 from cafes.permissions import IsMyCafe, IsMyCafeDepartment
-from cafes.serializers.api.cafes import (CafeRetrieveSerializer,
-                                         CafeListSerializer,
-                                         CafeCreateSerializer,
-                                         CafeUpdateSerializer,
-                                         CafeSearchListSerializer)
+from cafes.serializers.api.cafes import (
+    CafeRetrieveSerializer,
+    CafeListSerializer,
+    CafeCreateSerializer,
+    CafeUpdateSerializer,
+    CafeSearchListSerializer
+)
 from cafes.serializers.api.departments import (
     CafeDepartmentListSerializer,
     CafeDepartmentRetrieveSerializer,
-    CafeDepartmentCreateUpdateSerializer)
+    CafeDepartmentCreateUpdateSerializer
+)
 from cafes.views.nested.nested import BaseCafeView
-from common.views.mixins import ListViewSet
+
 
 
 @extend_schema_view(
@@ -36,6 +40,7 @@ class CafeSearchView(ListViewSet):
                                  tags=['Кафе']),
 )
 class CafeView(BaseCafeView):
+    permission_classes = [IsAdminUser]
     queryset = Cafe.objects.all()
 
     multi_serializer_class = {

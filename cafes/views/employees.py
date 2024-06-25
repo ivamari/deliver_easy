@@ -2,11 +2,14 @@ from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from cafes.models.employees import Employee
 from cafes.permissions import IsMyCafeEmployee
-from cafes.serializers.api.employees import (EmployeeListSerializer,
-                                             EmployeeRetrieveSerializer,
-                                             EmployeeUpdateSerializer,
-                                             EmployeeDeleteSerializer)
+from cafes.serializers.api.employees import (
+    EmployeeListSerializer,
+    EmployeeRetrieveSerializer,
+    EmployeeUpdateSerializer,
+    EmployeeDeleteSerializer
+)
 from common.views.mixins import LCRUDViewSet
+
 
 
 @extend_schema_view(

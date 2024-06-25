@@ -4,8 +4,10 @@ from rest_framework import serializers
 from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.cafes import Cafe
 from cafes.models.departments import Department
+
 from common.serializers.mixins import ExtendedModelSerializer
-from users.serializers.nested.users import (UserShortSerializer, )
+from users.serializers.nested.users import UserShortSerializer
+
 
 User = get_user_model()
 

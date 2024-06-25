@@ -19,7 +19,7 @@ class UserAdmin(admin.ModelAdmin):
         (None, {'fields': (
             'phone_number', 'email',)}),
         (_('Личная информация'),
-         {'fields': ('first_name', 'last_name', 'username', 'birth_day',
+         {'fields': ('first_name', 'last_name', 'username', 'birth_day', 'password',
                      'is_work_account')}),
         (_('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser',

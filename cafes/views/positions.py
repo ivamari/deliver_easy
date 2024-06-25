@@ -1,10 +1,12 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from cafes.models.positions import Position
-from cafes.serializers.api.positions import (PositionListSerializer,
-                                             PositionRetrieveSerializer,
-                                             PositionCreateSerializer,
-                                             PositionUpdateSerializer)
+from cafes.serializers.api.positions import (
+    PositionListSerializer,
+    PositionRetrieveSerializer,
+    PositionCreateSerializer,
+    PositionUpdateSerializer
+)
 from common.views.mixins import LCRUViewSet
 
 

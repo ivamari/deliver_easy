@@ -1,15 +1,16 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils import timezone
+
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ParseError
+
 
 User = get_user_model()
 
 
 class RegistrationEmployeeSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации сотрудника"""
-    # сделать подтверждение почты и подтверждение номера телефона
     email = serializers.EmailField()
     password = serializers.CharField(
         style={'input_type': 'password'},
@@ -21,11 +22,17 @@ class RegistrationEmployeeSerializer(serializers.ModelSerializer):
         fields = (
             'first_name',
             'last_name',
+            'username',
             'password',
             'phone_number',
             'email',
             'birth_day',
+            'is_work_account',
         )
+
+    def validate(self, data):
+        data['is_work_account'] = True
+        return data
 
     def validate_birth_year(self, value):
         now = timezone.now().date()
@@ -40,9 +47,12 @@ class RegistrationEmployeeSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        password = validated_data.pop('password', None)
         user = User.objects.create(**validated_data)
         user.is_work_account = True
-        user.save()
+        if password:
+            user.set_password(password)
+            user.save()
         return user
 
 
@@ -90,15 +100,13 @@ class MeEmployeeSerializer(serializers.ModelSerializer):
             'email',
             'phone_number',
             'birth_day',
+            'is_work_account',
         )
 
 
-class MeEmployeeUpdateSerializer(serializers.ModelSerializer):
+class EmployeeUpdateRetrieveSerializer(serializers.ModelSerializer):
     """Сериализатор для изменения профиля сотрудника"""
     email = serializers.EmailField()
-
-    # сделать изменение номера телефона с подтверждением
-    # сделать изменение почты с подтверждением
 
     class Meta:
         model = User
@@ -116,6 +124,7 @@ class MeEmployeeUpdateSerializer(serializers.ModelSerializer):
         age = (now - value).days // 365
         if not (14 < age < 85):
             raise ParseError(
-                'Проверьте дату рождения. Возраст должен быть в пределах от 14 до 85 лет'
+                'Проверьте дату рождения. '
+                'Возраст должен быть в пределах от 14 до 85 лет'
             )
         return value

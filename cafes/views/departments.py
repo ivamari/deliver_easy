@@ -1,11 +1,13 @@
 from drf_spectacular.utils import extend_schema_view, extend_schema
+
 from cafes.models.departments import Department
 from cafes.permissions import IsMyDepartment
-
 from cafes.serializers.api.departments import (
     DepartmentLittleListSerializer,
-    CafeDepartmentCreateUpdateSerializer)
+    CafeDepartmentCreateUpdateSerializer
+)
 from common.views.mixins import LCRUViewSet
+
 
 
 @extend_schema_view(

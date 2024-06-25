@@ -4,6 +4,7 @@ from rest_framework.exceptions import ParseError
 from cafes.models.products import Category
 from common.serializers.mixins import ExtendedModelSerializer
 
+
 User = get_user_model()
 
 

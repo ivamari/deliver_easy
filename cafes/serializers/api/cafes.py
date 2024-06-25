@@ -1,13 +1,16 @@
 from django.contrib.auth import get_user_model
+from django.db import models
+
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
+from rest_framework_gis.serializers import GeoFeatureModelSerializer
 
 from cafes.models.cafes import Cafe
 from common.serializers.mixins import ExtendedModelSerializer
 from users.serializers.nested.users import UserShortSerializer
 
-from rest_framework_gis.serializers import GeoFeatureModelSerializer
 from crum import get_current_user
+
 
 User = get_user_model()
 

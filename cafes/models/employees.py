@@ -1,12 +1,12 @@
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete
 from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 
 from cafes.models.cafe_departments import CafeDepartment
 from cafes.models.cafes import Cafe
-from django.contrib.auth import get_user_model
-
 from cafes.models.positions import Position
+
 
 User = get_user_model()
 

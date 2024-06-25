@@ -6,7 +6,9 @@ from cafes.models.categories import Category
 from cafes.models.products import Product
 from cafes.serializers.nested.cafes import CafeShortSerializer
 from cafes.serializers.nested.categories import CategoryShortSerializer
+
 from common.serializers.mixins import ExtendedModelSerializer
+
 
 User = get_user_model()
 
